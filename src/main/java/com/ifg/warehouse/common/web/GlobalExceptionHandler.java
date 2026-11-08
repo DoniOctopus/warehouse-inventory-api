@@ -2,6 +2,7 @@ package com.ifg.warehouse.common.web;
 
 import com.ifg.warehouse.common.exception.BusinessRuleException;
 import com.ifg.warehouse.common.exception.ConflictException;
+import com.ifg.warehouse.common.exception.InsufficientStockException;
 import com.ifg.warehouse.common.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +41,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ConflictException.class)
     ProblemDetail handleConflict(ConflictException ex) {
         return problem(HttpStatus.CONFLICT, "Conflict", ex.getMessage());
+    }
+
+    @ExceptionHandler(InsufficientStockException.class)
+    ProblemDetail handleInsufficientStock(InsufficientStockException ex) {
+        ProblemDetail problem = problem(HttpStatus.CONFLICT, "Insufficient stock", ex.getMessage());
+        problem.setProperty("sku", ex.getSku());
+        problem.setProperty("requested", ex.getRequested());
+        problem.setProperty("available", ex.getAvailable());
+        return problem;
     }
 
     @ExceptionHandler(BusinessRuleException.class)

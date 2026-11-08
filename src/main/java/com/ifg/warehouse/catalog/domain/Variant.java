@@ -1,5 +1,6 @@
 package com.ifg.warehouse.catalog.domain;
 
+import com.ifg.warehouse.common.exception.InsufficientStockException;
 import com.ifg.warehouse.common.persistence.AuditableEntity;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -92,6 +93,35 @@ public class Variant extends AuditableEntity {
         this.attributes.clear();
         if (newAttributes != null) {
             this.attributes.putAll(newAttributes);
+        }
+    }
+
+    /**
+     * Adds units to stock (restock, returned goods, cancelled order).
+     */
+    public void increaseStock(int quantity) {
+        requirePositive(quantity);
+        stockQuantity = Math.addExact(stockQuantity, quantity);
+    }
+
+    /**
+     * Removes units from stock. Refuses to go below zero, which is what prevents
+     * selling items that are out of stock. Callers must hold a write lock on the row
+     * (see {@code VariantRepository#findByIdForUpdate}) so the check-then-update is atomic.
+     *
+     * @throws InsufficientStockException if fewer than {@code quantity} units are on hand
+     */
+    public void decreaseStock(int quantity) {
+        requirePositive(quantity);
+        if (quantity > stockQuantity) {
+            throw new InsufficientStockException(sku, quantity, stockQuantity);
+        }
+        stockQuantity -= quantity;
+    }
+
+    private static void requirePositive(int quantity) {
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("Quantity must be positive, was " + quantity);
         }
     }
 
