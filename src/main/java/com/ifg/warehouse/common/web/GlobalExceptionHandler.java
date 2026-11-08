@@ -6,8 +6,8 @@ import com.ifg.warehouse.common.exception.InsufficientStockException;
 import com.ifg.warehouse.common.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.ConcurrencyFailureException;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -57,8 +57,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return problem(HttpStatus.UNPROCESSABLE_ENTITY, "Business rule violated", ex.getMessage());
     }
 
-    @ExceptionHandler(OptimisticLockingFailureException.class)
-    ProblemDetail handleOptimisticLock(OptimisticLockingFailureException ex) {
+    @ExceptionHandler(ConcurrencyFailureException.class)
+    ProblemDetail handleConcurrencyFailure(ConcurrencyFailureException ex) {
         return problem(HttpStatus.CONFLICT, "Concurrent modification",
                 "The resource was modified by another request. Please reload it and try again.");
     }
