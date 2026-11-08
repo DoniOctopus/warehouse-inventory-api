@@ -1,0 +1,16 @@
+spring:
+  # Isolated in-memory database per test context, without sample data.
+  datasource:
+    url: jdbc:h2:mem:warehouse-test;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    locations: classpath:db/migration
+  data:
+    web:
+      pageable:
+        max-page-size: 100
