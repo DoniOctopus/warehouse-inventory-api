@@ -9,6 +9,7 @@ import com.ifg.warehouse.catalog.dto.UpdateItemRequest;
 import com.ifg.warehouse.catalog.repository.ItemRepository;
 import com.ifg.warehouse.common.exception.ResourceNotFoundException;
 import com.ifg.warehouse.common.web.PageResponse;
+import com.ifg.warehouse.inventory.service.StockLedger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,10 +22,12 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
     private final SkuPolicy skuPolicy;
+    private final StockLedger stockLedger;
 
-    public ItemService(ItemRepository itemRepository, SkuPolicy skuPolicy) {
+    public ItemService(ItemRepository itemRepository, SkuPolicy skuPolicy, StockLedger stockLedger) {
         this.itemRepository = itemRepository;
         this.skuPolicy = skuPolicy;
+        this.stockLedger = stockLedger;
     }
 
     public ItemResponse create(CreateItemRequest request) {
@@ -35,7 +38,9 @@ public class ItemService {
         Item item = new Item(request.name().trim(), request.description(), request.basePrice());
         request.variantsOrEmpty().forEach(v -> item.addVariant(toVariant(v)));
 
-        return ItemResponse.from(itemRepository.save(item));
+        Item saved = itemRepository.save(item);
+        saved.getVariants().forEach(stockLedger::recordInitialStock);
+        return ItemResponse.from(saved);
     }
 
     @Transactional(readOnly = true)
