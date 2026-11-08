@@ -7,6 +7,7 @@ import com.ifg.warehouse.catalog.dto.UpdateVariantRequest;
 import com.ifg.warehouse.catalog.dto.VariantResponse;
 import com.ifg.warehouse.catalog.repository.VariantRepository;
 import com.ifg.warehouse.common.exception.ResourceNotFoundException;
+import com.ifg.warehouse.inventory.service.StockLedger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,11 +20,14 @@ public class VariantService {
     private final ItemService itemService;
     private final VariantRepository variantRepository;
     private final SkuPolicy skuPolicy;
+    private final StockLedger stockLedger;
 
-    public VariantService(ItemService itemService, VariantRepository variantRepository, SkuPolicy skuPolicy) {
+    public VariantService(ItemService itemService, VariantRepository variantRepository,
+                          SkuPolicy skuPolicy, StockLedger stockLedger) {
         this.itemService = itemService;
         this.variantRepository = variantRepository;
         this.skuPolicy = skuPolicy;
+        this.stockLedger = stockLedger;
     }
 
     public VariantResponse create(Long itemId, CreateVariantRequest request) {
@@ -33,7 +37,9 @@ public class VariantService {
         Variant variant = ItemService.toVariant(request);
         item.addVariant(variant);
         // Flush so the generated id and timestamps are available for the response.
-        return VariantResponse.from(variantRepository.saveAndFlush(variant));
+        Variant saved = variantRepository.saveAndFlush(variant);
+        stockLedger.recordInitialStock(saved);
+        return VariantResponse.from(saved);
     }
 
     @Transactional(readOnly = true)
