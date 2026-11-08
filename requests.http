@@ -1,0 +1,102 @@
+### Shop Warehouse API: example requests
+### Run from IntelliJ IDEA or VS Code (REST Client). Ids assume a fresh database with sample data.
+
+@baseUrl = http://localhost:8080/api
+
+### List items (paginated)
+GET {{baseUrl}}/items?page=0&size=10&sort=name,asc
+
+### Search items by name
+GET {{baseUrl}}/items?name=shirt
+
+### Get one item with its variants
+GET {{baseUrl}}/items/1
+
+### Create an item with variants
+POST {{baseUrl}}/items
+Content-Type: application/json
+
+{
+  "name": "Hoodie",
+  "description": "Fleece-lined pullover hoodie",
+  "basePrice": 249000,
+  "variants": [
+    { "sku": "HD-GRY-M", "name": "Grey / M", "initialStock": 10,
+      "attributes": { "color": "Grey", "size": "M" } },
+    { "sku": "HD-GRY-XL", "name": "Grey / XL", "price": 269000, "initialStock": 4,
+      "attributes": { "color": "Grey", "size": "XL" } }
+  ]
+}
+
+### Update an item
+PUT {{baseUrl}}/items/3
+Content-Type: application/json
+
+{ "name": "Canvas Tote Bag", "description": "Heavy canvas tote, now with zip", "basePrice": 79000 }
+
+### Delete an item
+DELETE {{baseUrl}}/items/3
+
+### Add a variant
+POST {{baseUrl}}/items/4/variants
+Content-Type: application/json
+
+{ "sku": "MUG-RED", "name": "Red", "initialStock": 8, "attributes": { "color": "Red" } }
+
+### List the variants of an item
+GET {{baseUrl}}/items/1/variants
+
+### Update a variant (price, name, attributes; not stock)
+PUT {{baseUrl}}/items/1/variants/3
+Content-Type: application/json
+
+{ "sku": "TS-BLK-XL", "name": "Black / XL", "price": 115000,
+  "attributes": { "color": "Black", "size": "XL" } }
+
+### Delete a variant
+DELETE {{baseUrl}}/items/2/variants/7
+
+### Restock a variant
+POST {{baseUrl}}/variants/4/stock-movements
+Content-Type: application/json
+
+{ "type": "RESTOCK", "quantity": 30, "reason": "PO-2026-0117" }
+
+### Adjust stock (negative = remove units)
+POST {{baseUrl}}/variants/4/stock-movements
+Content-Type: application/json
+
+{ "type": "ADJUSTMENT", "quantity": -2, "reason": "Damaged in storage" }
+
+### Stock history of a variant
+GET {{baseUrl}}/variants/4/stock-movements
+
+### Low-stock report
+GET {{baseUrl}}/inventory/low-stock?threshold=3
+
+### Place an order
+POST {{baseUrl}}/orders
+Content-Type: application/json
+
+{
+  "items": [
+    { "variantId": 2, "quantity": 2 },
+    { "variantId": 9, "quantity": 1 }
+  ],
+  "note": "Walk-in customer"
+}
+
+### Order the same mug again: its last unit was sold above -> 409 Conflict
+POST {{baseUrl}}/orders
+Content-Type: application/json
+
+{ "items": [ { "variantId": 9, "quantity": 1 } ] }
+
+### List orders
+GET {{baseUrl}}/orders?status=COMPLETED
+
+### Get an order
+GET {{baseUrl}}/orders/1
+
+### Cancel an order (stock is returned)
+POST {{baseUrl}}/orders/1/cancel
