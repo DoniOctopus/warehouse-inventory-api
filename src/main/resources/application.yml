@@ -5,7 +5,7 @@ spring:
   # File-based H2 so data survives application restarts.
   # AUTO_SERVER lets you connect with an external SQL client while the app is running.
   datasource:
-    url: jdbc:h2:file:./data/warehouse;AUTO_SERVER=TRUE
+    url: jdbc:h2:file:./data/warehouse;AUTO_SERVER=TRUE;LOCK_TIMEOUT=10000
     username: sa
     password:
 
