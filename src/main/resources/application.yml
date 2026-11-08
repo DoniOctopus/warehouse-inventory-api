@@ -1,6 +1,6 @@
 spring:
   application:
-    name: shop-warehouse-api
+    name: warehouse-inventory-api
 
   # File-based H2 so data survives application restarts.
   # AUTO_SERVER lets you connect with an external SQL client while the app is running.

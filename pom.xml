@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.ifg</groupId>
-    <artifactId>shop-warehouse-api</artifactId>
+    <artifactId>warehouse-inventory-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Shop Warehouse API</name>
+    <name>Warehouse Inventory API</name>
     <description>RESTful API for managing a shop's warehouse: items, variants, pricing, stock and orders</description>
 
     <properties>

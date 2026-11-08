@@ -1,4 +1,4 @@
-# Shop Warehouse API
+# Warehouse Inventory API
 
 A RESTful backend for managing a shop's warehouse inventory: **items**, their **variants**
 (size, colour, …), **pricing**, **stock levels**, and **orders** that sell stock without
@@ -36,7 +36,7 @@ Or build and run the jar:
 
 ```bash
 ./mvnw package
-java -jar target/shop-warehouse-api-0.0.1-SNAPSHOT.jar
+java -jar target/warehouse-inventory-api-0.0.1-SNAPSHOT.jar
 ```
 
 Once it is running:

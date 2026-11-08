@@ -1,4 +1,4 @@
-### Shop Warehouse API: example requests
+### Warehouse Inventory API: example requests
 ### Run from IntelliJ IDEA or VS Code (REST Client). Ids assume a fresh database with sample data.
 
 @baseUrl = http://localhost:8080/api
