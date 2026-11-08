@@ -4,7 +4,7 @@ A RESTful backend for managing a shop's warehouse inventory: **items**, their **
 (size, colour, …), **pricing**, **stock levels**, and **orders** that sell stock without
 ever overselling.
 
-Built with Java 17, Spring Boot 3.4, Spring Data JPA, Flyway and H2.
+Built with Java 17, Spring Boot 3.5, Spring Data JPA, Flyway and H2.
 
 ---
 
@@ -36,7 +36,7 @@ Or build and run the jar:
 
 ```bash
 ./mvnw package
-java -jar target/warehouse-0.0.1-SNAPSHOT.jar
+java -jar target/shop-warehouse-api-0.0.1-SNAPSHOT.jar
 ```
 
 Once it is running:
