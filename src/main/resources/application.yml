@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: warehouse
+
+  # File-based H2 so data survives application restarts.
+  # AUTO_SERVER lets you connect with an external SQL client while the app is running.
+  datasource:
+    url: jdbc:h2:file:./data/warehouse;AUTO_SERVER=TRUE
+    username: sa
+    password:
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  jpa:
+    # Schema is owned by Flyway; Hibernate only validates that entities match it.
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  flyway:
+    # db/sample holds demo data. Remove it from the list to start with an empty catalog.
+    locations: classpath:db/migration,classpath:db/sample
+
+  data:
+    web:
+      pageable:
+        max-page-size: 100
+
+server:
+  error:
+    include-message: always
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
