@@ -22,6 +22,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        # Load variants/attributes of many items in a few queries instead of N+1.
+        default_batch_fetch_size: 50
 
   flyway:
     # db/sample holds demo data. Remove it from the list to start with an empty catalog.
